@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coğrafya Bilgi Yarışması</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/tone"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+      .correct {
+        background-color: #28a745 !important;
+        animation: pulseCorrect 1s infinite;
+      }
+      .incorrect {
+        background-color: #dc3545 !important;
+        animation: pulseIncorrect 1s infinite;
+      }
+      @keyframes pulseCorrect {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+      @keyframes pulseIncorrect {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+      body {
+        font-family: 'Press Start 2P', cursive;
+        background-color: #f0f0f0;
+        transition: background-color 0.5s ease;
+      }
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        width: 80%;
+        max-width: 600px;
+        text-align: center;
+        transition: background-color 0.5s ease, box-shadow 0.3s ease;
+        animation: fadeIn 1s ease;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+        transition: color 0.3s ease;
+      }
+      #quiz-area {
+        margin-bottom: 20px;
+      }
+      #question {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        transition: color 0.3s ease;
+        animation: slideInDown 0.5s ease;
+      }
+      @keyframes slideInDown {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      #options button {
+        font-size: 1.1rem;
+        padding: 15px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        background-color: #4CAF50;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        animation: pulse 0.5s infinite alternate;
+      }
+      @keyframes pulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.05); }
+      }
+      #options button:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      #options button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.8;
+        transform: none;
+        box-shadow: none;
+        animation: none;
+      }
+      #next-button {
+        font-size: 1.2rem;
+        padding: 12px 25px;
+        border-radius: 10px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 1s ease;
+      }
+      #next-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      #next-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.8;
+        transform: none;
+        box-shadow: none;
+        animation: none;
+      }
+      #results {
+        font-size: 1.2rem;
+        margin-top: 25px;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #E0F7FA;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        animation: slideInUp 0.5s ease;
+      }
+      @keyframes slideInUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      #results h2 {
+        color: #1A5235;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        animation: fadeIn 0.5s ease;
+      }
+      #results p {
+        color: #2c3e50;
+        font-weight: bold;
+        margin-bottom: 10px;
+        animation: fadeIn 0.5s ease;
+      }
+      #restart-button {
+        font-size: 1.1rem;
+        padding: 12px 25px;
+        border-radius: 10px;
+        background-color: #FF6F61;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        animation: pulse 0.5s infinite alternate;
+      }
+      #restart-button:hover {
+        background-color: #D34836;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      #restart-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.8;
+        transform: none;
+        box-shadow: none;
+        animation: none;
+      }
+      .timer {
+        font-size: 1.2rem;
+        color: #E74C3C;
+        margin-bottom: 10px;
+        animation: pulseTimer 2s infinite;
+      }
+      @keyframes pulseTimer {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Coğrafya Bilgi Yarışması</h1>
+        <div id="quiz-area">
+            <div id="question"></div>
+            <div id="options"></div>
+            <div class="timer">Kalan Süre: <span id="timer-display">10</span> Saniye</div>
+            <button id="next-button">Sonraki Soru</button>
+            <div id="results" style="display:none;">
+                <h2>Sonuçlar</h2>
+                <p>Doğru Cevaplar: <span id="correct-answers">0</span></p>
+                <p>Yanlış Cevaplar: <span id="wrong-answers">0</span></p>
+                <button id="restart-button">Yeniden Başlat</button>
+            </div>
+        </div>
+    </div>
+<script>
+const questions = [
+  {
+    question: "Türkiye'nin başkenti neresidir?",
+    options: ["İstanbul", "Ankara", "İzmir", "Bursa"],
+    answer: "Ankara",
+  },
+  {
+    question: "Hangi ülke Asya kıtasında yer almaz?",
+    options: ["Çin", "Japonya", "Hindistan", "Avustralya"],
+    answer: "Avustralya",
+  },
+  {
+    question: "Dünyanın en yüksek dağı hangisidir?",
+    options: ["K2", "Kangchenjunga", "Everest", "Lhotse"],
+    answer: "Everest",
+  },
+  {
+    question: "Türkiye'nin en büyük gölü hangisidir?",
+    options: ["Tuz Gölü", "Van Gölü", "Beyşehir Gölü", "Eğirdir Gölü"],
+    answer: "Van Gölü",
+  },
+  {
+    question: "Hangi okyanus en geniş okyanustur?",
+    options: [
+      "Atlas Okyanusu",
+      "Hint Okyanusu",
+      "Arktik Okyanusu",
+      "Pasifik Okyanusu",
+    ],
+    answer: "Pasifik Okyanusu",
+  },
+  {
+    question: "En uzun nehir hangisidir?",
+    options: ["Nil Nehri", "Amazon Nehri", "Yangtze Nehri", "Mississippi Nehri"],
+    answer: "Nil Nehri",
+  },
+  {
+    question: "Hangisi Avrupa kıtasında yer almaz?",
+    options: ["Fransa", "İspanya", "Türkiye", "Mısır"],
+    answer: "Mısır",
+  },
+  {
+    question: "Dünyadaki en büyük çöl hangisidir?",
+    options: ["Gobi Çölü", "Sahra Çölü", "Kalahari Çölü", "Atacama Çölü"],
+    answer: "Sahra Çölü",
+  },
+  {
+    question: "Afrika kıtasının en büyük ülkesi hangisidir?",
+    options: ["Mısır", "Nijerya", "Güney Afrika", "Cezayir"],
+    answer: "Cezayir",
+  },
+  {
+    question: "Türkiye'nin en yüksek dağı hangisidir?",
+    options: ["Erciyes Dağı", "Uludağ", "Ağrı Dağı", "Kaçkar Dağı"],
+    answer: "Ağrı Dağı",
+  },
+  {
+    question: "En kalabalık ülke hangisidir?",
+    options: ["Çin", "Hindistan", "ABD", "Endonezya"],
+    answer: "Çin",
+  },
+  {
+    question: "Dünyanın en büyük adası hangisidir?",
+    options: ["Yeni Gine", "Borneo", "Grönland", "Madagaskar"],
+    answer: "Grönland",
+  },
+  {
+    question: "Hangisi Avustralya'nın başkenti değildir?",
+    options: ["Sidney", "Melbourne", "Canberra", "Brisbane"],
+    answer: "Sidney",
+  },
+  {
+    question: "Hangi şehir Türkiye'de en fazla nüfusa sahip olan şehir değildir?",
+    options: ["İstanbul", "Ankara", "İzmir", "Bursa"],
+    answer: "Bursa",
+  },
+  {
+    question: "Dünyanın en derin gölü hangisidir?",
+    options: ["Hazar Denizi", "Victoria Gölü", "Baykal Gölü", "Tanganyika Gölü"],
+    answer: "Baykal Gölü",
+  },
+  {
+    question: "Brezilya hangi kıtada yer almaktadır?",
+    options: ["Afrika", "Asya", "Güney Amerika", "Avrupa"],
+    answer: "Güney Amerika",
+  },
+  {
+    question: "Hangi ülkenin başkenti Tokyo'dur?",
+    options: ["Çin", "Güney Kore", "Japonya", "Vietnam"],
+    answer: "Japonya",
+  },
+  {
+    question: "Dünyanın en büyük kara parçası hangi kıtadır?",
+    options: ["Afrika", "Avustralya", "Asya", "Kuzey Amerika"],
+    answer: "Asya",
+  },
+  {
+    question: "Hangi şehir Avrupa'da yer almaz?",
+    options: ["Madrid", "Paris", "Berlin", "Riyad"],
+    answer: "Riyad",
+  },
+  {
+    question: "Hangi ülke dünyanın en güneydeki ülkesi değildir?",
+    options: ["Arjantin", "Şili", "Yeni Zelanda", "Güney Afrika"],
+    answer: "Güney Afrika",
+  },
+  {
+    question: "Hangi dağ Türkiye'de yer almaz?",
+    options: ["Ağrı Dağı", "Kaçkar Dağları", "Toros Dağları", "Himalaya Dağları"],
+    answer: "Himalaya Dağları",
+  },
+  {
+    question: "Dünyanın en uzun kıyısına sahip ülke hangisidir?",
+    options: ["Avustralya", "Brezilya", "Kanada", "Rusya"],
+    answer: "Kanada",
+  },
+  {
+    question:
+      "Hangi ülkenin toprakları hem Asya hem de Avrupa kıtalarında yer alır?",
+    options: ["İran", "Mısır", "Türkiye", "Fransa"],
+    answer: "Türkiye",
+  },
+  {
+    question: "En fazla dağlık alana sahip ülke hangisidir?",
+    options: ["ABD", "Rusya", "Çin", "Nepal"],
+    answer: "Nepal",
+  },
+  {
+    question: "Hangisi bir okyanus değildir?",
+    options: [
+      "Atlas Okyanusu",
+      "Bering Denizi",
+      "Hint Okyanusu",
+      "Pasifik Okyanusu",
+    ],
+    answer: "Bering Denizi",
+  },
+  {
+    question: "Amerika'nın başkenti hangi şehirdir?",
+    options: [
+      "New York",
+      "Los Angeles",
+      "Washington, D.C.",
+      "Chicago",
+    ],
+    answer: "Washington, D.C.",
+  },
+  {
+    question: "Hangi ülke Akdeniz'e kıyı değildir?",
+    options: ["İspanya", "İtalya", "Fransa", "Almanya"],
+    answer: "Almanya",
+  },
+  {
+    question: "Hangisi Kuzey Amerika kıtasında yer almaz?",
+    options: ["Kanada", "Meksika", "Brezilya", "ABD"],
+    answer: "Brezilya",
+  },
+  {
+    question: "Hangi ülke Afrika kıtasında yer almaz?",
+    options: ["Mısır", "Cezayir", "Çad", "Hindistan"],
+    answer: "Hindistan",
+  },
+  {
+    question: "Güney Amerika'da yer alan en büyük ülke hangisidir?",
+    options: ["Arjantin", "Şili", "Kolombiya", "Brezilya"],
+    answer: "Brezilya",
+  },
+  {
+    question: "Dünyanın en büyük denizi hangisidir?",
+    options: [
+      "Filipinler Denizi",
+      "Karadeniz",
+      "Okhotsk Denizi",
+      "Arap Denizi",
+    ],
+    answer: "Filipinler Denizi",
+  },
+  {
+    question: "En büyük volkanik dağ hangisidir?",
+    options: ["Mauna Loa", "Etna", "Vezüv", "Merapi"],
+    answer: "Mauna Loa",
+  },
+  {
+    question: "Hangisi Orta Doğu'da yer almaz?",
+    options: ["Irak", "Suriye", "Hindistan", "Suudi Arabistan"],
+    answer: "Hindistan",
+  },
+  {
+    question: "Afrika'nın en yüksek dağı hangisidir?",
+    options: ["Kilimanjaro", "Elbrus", "Mont Blanc", "Ararat"],
+    answer: "Kilimanjaro",
+  },
+  {
+    question: "Türkiye'nin en büyük adası hangisidir?",
+    options: ["Gökçeada", "Büyükada", "Bozcaada", "İmralı"],
+    answer: "Gökçeada",
+  },
+  {
+    question: "Dünyanın en derin okyanusu hangisidir?",
+    options: [
+      "Pasifik Okyanusu",
+      "Atlas Okyanusu",
+      "Hint Okyanusu",
+      "Arktik Okyanusu",
+    ],
+    answer: "Pasifik Okyanusu",
+  },
+  {
+    question: "Hangi şehir İtalya'nın başkentidir?",
+    options: ["Floransa", "Roma", "Venedik", "Napoli"],
+    answer: "Roma",
+  },
+  {
+    question: "Avrupa'daki en büyük ada hangisidir?",
+    options: ["Büyük Britanya", "İzlanda", "İrlanda", "Sicilya"],
+    answer: "Büyük Britanya",
+  },
+  {
+    question: "Hangisi Asya kıtasındaki en büyük şehirlerden biri değildir?",
+    options: ["Tokyo", "Pekin", "Mumbai", "Londra"],
+    answer: "Londra",
+  },
+  {
+    question: "Hangi deniz Asya kıtasında yer almaz?",
+    options: ["Çin Denizi", "Aral Gölü", "Karadeniz", "Kızıldeniz"],
+    answer: "Karadeniz",
+  },
+  {
+    question: "Hangi ülke Asya kıtasında yer almaz?",
+    options: ["Meksika", "Endonezya", "Hindistan", "Çin"],
+    answer: "Meksika",
+  },
+  {
+    question: "Avrupa'nın en büyük ülkesi hangisidir?",
+    options: ["Rusya", "Almanya", "Fransa", "İngiltere"],
+    answer: "Rusya",
+  },
+  {
+    question: "Dünyanın en büyük ırmağı hangisidir?",
+    options: ["Amazon", "Nil", "Yangtze", "Mississippi"],
+    answer: "Amazon",
+  },
+  {
+    question: "Hangi şehir ABD'de yer almaz?",
+    options: ["New York", "Los Angeles", "Vancouver", "San Francisco"],
+    answer: "Vancouver",
+  },
+  {
+    question: "Hangi ülke batıda yer almaz?",
+    options: ["Fransa", "İspanya", "Japonya", "Portekiz"],
+    answer: "Japonya",
+  },
+  {
+    question: "Hangi kıta sadece güney yarım kürede yer alır?",
+    options: ["Antarktika", "Asya", "Avrupa", "Kuzey Amerika"],
+    answer: "Antarktika",
+  },
+  {
+    question: "En büyük volkan hangi adada yer alır?",
+    options: ["Hawaii", "Sicilya", "Sumatra", "Bali"],
+    answer: "Hawaii",
+  },
+  {
+    question: "Hangi ülke Güney Amerika'da yer almaz?",
+    options: ["Arjantin", "Bolivya", "Guyana", "Kanada"],
+    answer: "Kanada",
+  },
+  {
+    question: "Hangi şehir Avustralya'nın başkentidir?",
+    options: ["Sidney", "Melbourne", "Canberra", "Perth"],
+    answer: "Canberra",
+  },
+];
+
+let currentQuestionIndex = 0;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+let answered = false;
+let timeLeft = 10;
+let timerId;
+
+const questionElement = document.getElementById("question");
+const optionsElement = document.getElementById("options");
+const nextButton = document.getElementById("next-button");
+const resultsElement = document.getElementById("results");
+const correctAnswersElement = document.getElementById("correct-answers");
+const wrongAnswersElement = document.getElementById("wrong-answers");
+const restartButton = document.getElementById("restart-button");
+const timerDisplay = document.getElementById("timer-display");
+
+// Ses efektleri için Tone.js objeleri
+const correctSound = new Tone.Synth({
+    oscillator: { type: 'triangle' },
+    envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.2 }
+}).toDestination();
+
+const incorrectSound = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
+}).toDestination();
+
+function loadQuestion() {
+  if (currentQuestionIndex < questions.length) {
+    const currentQuestion = questions[currentQuestionIndex];
+    questionElement.textContent = currentQuestion.question;
+    optionsElement.innerHTML = "";
+    answered = false;
+    timeLeft = 10;
+    timerDisplay.textContent = timeLeft;
+    clearInterval(timerId);
+    startTimer();
+
+    currentQuestion.options.forEach((option) => {
+      const button = document.createElement("button");
+      button.textContent = option;
+      button.addEventListener("click", () => checkAnswer(option, option));
+      optionsElement.appendChild(button);
+    });
+
+    nextButton.disabled = true;
+    nextButton.textContent = "Cevapla";
+    resultsElement.style.display = "none";
+  } else {
+    showResults();
+  }
+}
+
+function checkAnswer(selectedOption, clickedOption) {
+    if (answered) return;
+    answered = true;
+
+    const currentQuestion = questions[currentQuestionIndex];
+    const options = optionsElement.querySelectorAll("button");
+    clearInterval(timerId);
+
+    options.forEach(button => {
+        button.disabled = true;
+    });
+
+    if (selectedOption === currentQuestion.answer) {
+        correctAnswers++;
+        correctSound.triggerAttackRelease("C4", "8n");
+        options.forEach(button => {
+          if (button.textContent === clickedOption) {
+            button.classList.add('correct');
+          }
+        });
+    } else {
+        wrongAnswers++;
+        incorrectSound.triggerAttackRelease("G4", "4n");
+        options.forEach(button => {
+          if (button.textContent === clickedOption) {
+            button.classList.add('incorrect');
+          }
+        });
+    }
+
+    nextButton.disabled = false;
+    nextButton.textContent = "Sonraki Soru";
+    setTimeout(nextQuestion, 2000);
+}
+
+function showResults() {
+    questionElement.textContent = "Yarışma Tamamlandı!";
+    optionsElement.innerHTML = "";
+    nextButton.style.display = "none";
+    resultsElement.style.display = "block";
+    correctAnswersElement.textContent = correctAnswers;
+    wrongAnswersElement.textContent = wrongAnswers;
+    restartButton.style.display = "inline-block";
+    clearInterval(timerId);
+}
+
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    correctAnswers = 0;
+    wrongAnswers = 0;
+    loadQuestion();
+    nextButton.style.display = "block";
+    restartButton.style.display = "none";
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    loadQuestion();
+}
+
+function startTimer() {
+  timeLeft = 10;
+  timerDisplay.textContent = timeLeft;
+  timerId = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      checkAnswer("", "");
+    }
+  }, 1000);
+}
+
+nextButton.addEventListener("click", () => {
+  if (!nextButton.disabled) {
+    currentQuestionIndex++;
+    loadQuestion();
+  }
+});
+
+restartButton.addEventListener("click", restartQuiz);
+
+loadQuestion();
+</script>
+</body>
+</html>
